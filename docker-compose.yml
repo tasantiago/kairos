@@ -3,7 +3,9 @@ services:
     build: ./api
     container_name: golang_api
     volumes:
-      - ./api:/app
+      - ./api:/home/appuser/app
+      - ./api/.docker/zsh/powerlevel10k/.p10k.zsh:/home/appuser/.p10k.zsh:delegated
+      - ./api/.docker/zsh/history:/home/appuser/zsh:delegated
     ports:
       - "8080:8080"
     depends_on:
@@ -14,6 +16,9 @@ services:
     container_name: react_front
     volumes:
       - ./front:/app
+      - ./front:/home/appuser/app
+      - ./front/.docker/zsh/powerlevel10k/.p10k.zsh:/home/appuser/.p10k.zsh:delegated
+      - ./front/.docker/zsh/history:/home/appuser/zsh:delegated
     ports:
       - "3000:3000"
     stdin_open: true
@@ -23,10 +28,10 @@ services:
     image: postgres:15
     container_name: postgres_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: app_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
