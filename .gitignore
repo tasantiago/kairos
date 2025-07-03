@@ -1,0 +1,24 @@
+# Node
+front/node_modules/
+front/build/
+
+# Golang
+api/bin/
+api/pkg/
+api/*.exe
+api/*.test
+api/coverage.out
+
+# Go cache
+api/.cache/
+api/.golangci.yml
+
+# VS Code
+.vscode/
+
+# Docker volumes
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
