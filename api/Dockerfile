@@ -20,7 +20,7 @@ COPY ./.docker/cert.crt /certs/ca-certificates.crt
 
 # Configure a variável de ambiente para apontar para os certificados
 ENV SSL_CERT_FILE /certs/ca-certificates.crt
-ENV GOPATH=/home/appuser/app
+# ENV GOPATH=/home/appuser/app
 # Default powerline10k theme, no plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.5/zsh-in-docker.sh)" -- \
     -t https://github.com/romkatv/powerlevel10k \
