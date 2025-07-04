@@ -1,4 +1,4 @@
-package comtrollers
+package controllers
 
 import (
 	"api/internal/models"

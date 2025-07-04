@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"net/http"
+	"api/internal/controllers"
 
 	"github.com/gorilla/mux"
 )
@@ -9,9 +9,7 @@ import (
 func LoadRoutes() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("API online"))
-	}).Methods("Get")
+	router.HandleFunc("/usuarios", controllers.CriarUsuario).Methods("Get")
 
 	return router
 }
