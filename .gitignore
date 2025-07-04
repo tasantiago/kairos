@@ -1,6 +1,8 @@
 # Node
 front/node_modules/
 front/build/
+front/.docker/zsh/history/.zsh_history
+
 
 # Golang
 api/bin/
@@ -8,6 +10,8 @@ api/pkg/
 api/*.exe
 api/*.test
 api/coverage.out
+api/.docker/zsh/history/.zsh_history
+
 
 # Go cache
 api/.cache/
