@@ -22,3 +22,6 @@ data/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Arquivos de ambiente (não subir nunca)
+**/.env*
