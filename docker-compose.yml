@@ -13,6 +13,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      TZ: America/Porto_Velho 
     ports:
       - "8080:8080"
     depends_on:
@@ -27,6 +28,8 @@ services:
       - ./front/.docker/zsh/powerlevel10k/.p10k.zsh:/home/appuser/.p10k.zsh:delegated
       - ./front/.docker/zsh/history:/home/appuser/zsh:delegated
     env_file: .env
+    environment:
+      TZ: America/Porto_Velho 
     ports:
       - "3000:3000"
     stdin_open: true
@@ -39,6 +42,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      TZ: America/Porto_Velho 
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:

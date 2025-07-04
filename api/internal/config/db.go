@@ -33,4 +33,9 @@ func Connect() {
 	}
 
 	log.Println("Banco de dados conectado com sucesso!")
+
+	row := DB.QueryRow("SELECT NOW()")
+	var now string
+	row.Scan(&now)
+	log.Println("Hora atual no banco:", now)
 }
