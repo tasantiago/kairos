@@ -45,12 +45,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.SenhaHash), []byte(cred.Senha))
+
 	if err != nil {
 		http.Error(w, "Senha inválida", http.StatusUnauthorized)
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   user.ID.String(),
 		"tipo": user.Tipo,
 	})
