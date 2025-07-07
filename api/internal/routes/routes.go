@@ -9,7 +9,9 @@ import (
 func LoadRoutes() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/usuarios", controllers.CriarUsuario).Methods("Get")
+	// router.Handle("/usuarios", middlewares.AuthMiddleware(http.HandlerFunc(controllers.CriarUsuario))).Methods("POST")
+	router.HandleFunc("/usuarios", controllers.CriarUsuario).Methods("POST")
+	router.HandleFunc("/login", controllers.Login).Methods("POST")
 
 	return router
 }

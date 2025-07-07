@@ -1,0 +1,23 @@
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Thyago",
+  "email": "thyago@empresa.com",
+  "senha": "123456",
+  "setor_id": "9d112183-c9bb-4401-8e31-4f2665989777",
+  "tipo": "admin"
+}
+# ID eae8b09b-51e6-4f81-8c18-2c8d06131891
+# email thyago@empresa.com
+# senha 123456
+
+### Login
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "thyago@empresa.com",
+  "senha": "123456"
+}
+
