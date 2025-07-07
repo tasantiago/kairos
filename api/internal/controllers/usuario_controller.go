@@ -46,6 +46,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.SenhaHash), []byte(cred.Senha))
 
+	log.Println("Senha digitada:", cred.Senha)
+	log.Println("Hash armazenado:", user.SenhaHash)
+
 	if err != nil {
 		http.Error(w, "Senha inválida", http.StatusUnauthorized)
 		return
