@@ -1,22 +1,72 @@
 package controllers
 
 import (
+	"api/internal/banco"
+	"api/internal/models"
 	"api/internal/repositories"
+	"api/internal/services"
 	"encoding/json"
-	"log"
+	"io"
 	"net/http"
-
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/golang-jwt/jwt/v5"
+	"strings"
 )
 
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Criando usuário"))
+	corpoRequest, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		services.Erro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
+	var usuario models.Usuario
+	if erro = json.Unmarshal(corpoRequest, &usuario); erro != nil {
+		services.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = usuario.Validar(); erro != nil {
+		services.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		services.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeUsuarios(db)
+	usuarioID, erro := repositorio.Criar(usuario)
+	if erro != nil {
+		services.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	usuario.ID = usuarioID
+	services.JSON(w, http.StatusCreated, usuario)
 }
 
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Criando usuário"))
+	nomeOuEmail := strings.ToLower(r.URL.Query().Get("usuario"))
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		services.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeUsuarios(db)
+	usuarios, erro := repositorio.Buscar(nomeOuEmail)
+	if erro != nil {
+		services.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	services.JSON(w, http.StatusOK, usuarios)
 }
 
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
@@ -27,40 +77,4 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 }
 func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Criando usuário"))
-}
-
-func Login(w http.ResponseWriter, r *http.Request) {
-	var cred struct {
-		Email string `json:"email"`
-		Senha string `json:"senha"`
-	}
-
-	json.NewDecoder(r.Body).Decode(&cred)
-
-	user, err := repositories.BuscarPorEmail(cred.Email)
-	if err != nil {
-		http.Error(w, "Usuario não encontrado", http.StatusUnauthorized)
-		return
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.SenhaHash), []byte(cred.Senha))
-
-	log.Println("Senha digitada:", cred.Senha)
-	log.Println("Hash armazenado:", user.SenhaHash)
-	log.Println(err)
-
-	if err != nil {
-		http.Error(w, "Senha inválida", http.StatusUnauthorized)
-		return
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   user.ID.String(),
-		"tipo": user.Tipo,
-	})
-
-	secret := []byte("chave_secreta_mesmo_depois_criar")
-	tokenString, _ := token.SignedString(secret)
-
-	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
 }

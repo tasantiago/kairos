@@ -2,12 +2,17 @@ POST http://localhost:8080/usuarios
 Content-Type: application/json
 
 {
-  "nome": "Thyago",
-  "email": "thyago3@empresa.com",
-  "senha_hash": "123456",
-  "setor_id": "9d112183-c9bb-4401-8e31-4f2665989777",
+  "nome": "    Berisberto     ",
+  "email": "beri@empresa.com   ",
+  "senha": "123456",
+  "setor_id": "3cb91849-eb10-4967-8c73-325f2bec3fd4",
   "tipo": "admin"
 }
+
+### busca usuarios
+GET http://localhost:8080/usuarios?usuario=3
+
+# 3cb91849-eb10-4967-8c73-325f2bec3fd4 - setor banco work
 # ID eae8b09b-51e6-4f81-8c18-2c8d06131891
 # email thyago@empresa.com
 # senha 123456
@@ -20,4 +25,6 @@ Content-Type: application/json
   "email": "thyago3@empresa.com",
   "senha_hash": "123456",
 }
+
+
 
