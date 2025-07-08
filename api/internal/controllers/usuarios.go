@@ -1,33 +1,32 @@
 package controllers
 
 import (
-	"api/internal/models"
 	"api/internal/repositories"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
 
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
-	var u models.Usuario
-	json.NewDecoder(r.Body).Decode(&u)
+	w.Write([]byte("Criando usuário"))
+}
 
-	u.ID = uuid.New()
-	hash, _ := bcrypt.GenerateFromPassword([]byte(u.SenhaHash), 14)
-	u.SenhaHash = string(hash)
+func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Criando usuário"))
+}
 
-	err := repositories.CriarUsuario(u)
-	if err != nil {
-		http.Error(w, "Erro ao criar usuários", http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(u)
+func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Criando usuário"))
+}
+func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Criando usuário"))
+}
+func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Criando usuário"))
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Senha digitada:", cred.Senha)
 	log.Println("Hash armazenado:", user.SenhaHash)
+	log.Println(err)
 
 	if err != nil {
 		http.Error(w, "Senha inválida", http.StatusUnauthorized)

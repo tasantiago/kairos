@@ -3,8 +3,8 @@ Content-Type: application/json
 
 {
   "nome": "Thyago",
-  "email": "thyago@empresa.com",
-  "senha": "123456",
+  "email": "thyago3@empresa.com",
+  "senha_hash": "123456",
   "setor_id": "9d112183-c9bb-4401-8e31-4f2665989777",
   "tipo": "admin"
 }
@@ -17,7 +17,7 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "email": "thyago@empresa.com",
-  "senha": "123456"
+  "email": "thyago3@empresa.com",
+  "senha_hash": "123456",
 }
 

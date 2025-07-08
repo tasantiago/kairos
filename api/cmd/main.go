@@ -2,7 +2,7 @@ package main
 
 import (
 	"api/internal/config"
-	"api/internal/routes"
+	"api/internal/router"
 	"log"
 	"net/http"
 	"os"
@@ -19,8 +19,8 @@ func main() {
 
 	config.Connect()
 
-	router := routes.LoadRoutes()
+	r := router.Gerar()
 	port := os.Getenv("PORT")
 	log.Println("Servidor rodando em http://localhost:" + port)
-	http.ListenAndServe(":"+port, router)
+	http.ListenAndServe(":"+port, r)
 }
