@@ -12,6 +12,20 @@ Content-Type: application/json
 ### busca usuarios
 GET http://localhost:8080/usuarios?usuario=3
 
+### busca usuario
+GET http://localhost:8080/usuarios/42205080-3223-4f33-acd5-d08040a5b475
+
+### Update usuario
+PUT http://localhost:8080/usuarios/72c52c19-f6cd-4fe9-97aa-a52d073cb6f8
+Content-Type: application/json
+
+{
+  "nome": "    Juquinha     ",
+  "email": "Juquinha@empresa.com   ",
+  "setor_id": "3cb91849-eb10-4967-8c73-325f2bec3fd4",
+  "tipo": "admin"
+}
+
 # 3cb91849-eb10-4967-8c73-325f2bec3fd4 - setor banco work
 # ID eae8b09b-51e6-4f81-8c18-2c8d06131891
 # email thyago@empresa.com

@@ -18,7 +18,7 @@ type Usuario struct {
 	CriadoEm time.Time `json:"criado_em,omitempty"`
 }
 
-func (usuario *Usuario) Validar() error {
+func (usuario *Usuario) Validar(etapa string) error {
 	usuario.Nome = strings.TrimSpace(usuario.Nome)
 	usuario.Email = strings.TrimSpace(usuario.Email)
 	usuario.Senha = strings.TrimSpace(usuario.Senha)
@@ -30,7 +30,7 @@ func (usuario *Usuario) Validar() error {
 	if usuario.Email == "" {
 		return errors.New("email não pode estar vazio")
 	}
-	if usuario.Senha == "" {
+	if etapa == "cadastro" && usuario.Senha == "" {
 		return errors.New("senha não pode estar vazia")
 	}
 	if usuario.SetorID == uuid.Nil {
