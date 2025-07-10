@@ -1,10 +1,12 @@
 package models
 
 import (
+	"api/internal/services"
 	"errors"
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"github.com/google/uuid"
 )
 
@@ -21,7 +23,6 @@ type Usuario struct {
 func (usuario *Usuario) Validar(etapa string) error {
 	usuario.Nome = strings.TrimSpace(usuario.Nome)
 	usuario.Email = strings.TrimSpace(usuario.Email)
-	usuario.Senha = strings.TrimSpace(usuario.Senha)
 	usuario.Tipo = strings.TrimSpace(usuario.Tipo)
 
 	if usuario.Nome == "" {
@@ -30,9 +31,21 @@ func (usuario *Usuario) Validar(etapa string) error {
 	if usuario.Email == "" {
 		return errors.New("email não pode estar vazio")
 	}
+	if erro := checkmail.ValidateFormat(usuario.Email); erro != nil {
+		return errors.New("formato de email inválido")
+	}
 	if etapa == "cadastro" && usuario.Senha == "" {
 		return errors.New("senha não pode estar vazia")
 	}
+
+	if etapa == "cadastro" {
+		senhaComHash, erro := services.Hash(usuario.Senha)
+		if erro != nil {
+			return erro
+		}
+		usuario.Senha = string(senhaComHash)
+	}
+
 	if usuario.SetorID == uuid.Nil {
 		return errors.New("setor_id não pode ser nulo")
 	}
@@ -41,4 +54,5 @@ func (usuario *Usuario) Validar(etapa string) error {
 	}
 
 	return nil
+
 }
