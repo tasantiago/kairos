@@ -39,8 +39,8 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "email": "thyago3@empresa.com",
-  "senha_hash": "123456",
+  "email": "empdsadsaddresa@ada.ds",
+  "senha": "123456"
 }
 
 
