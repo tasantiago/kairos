@@ -1,0 +1,60 @@
+name: fluxo
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fluxo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
+      POSTGRES_DB: fluxo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U fluxo -d fluxo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+    environment:
+      PORT: '8080'
+      DATABASE_URL: postgres://fluxo:${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}@postgres:5432/fluxo?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8088}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Defina ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Defina ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME:-Gestor}
+      UPLOAD_DIR: /app/uploads
+      AUTO_MIGRATE: 'true'
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -qO-, 'http://localhost:8080/health']
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+    ports:
+      - '${HTTP_PORT:-8088}:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -qO-, 'http://localhost/health']
+      interval: 20s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  uploads:

@@ -1,0 +1,27 @@
+ALTER TABLE tarefas ADD COLUMN tipo_conteudo text NOT NULL DEFAULT 'outro';
+ALTER TABLE tarefas ADD COLUMN etapa text NOT NULL DEFAULT 'pauta';
+ALTER TABLE tarefas ADD COLUMN canal text NOT NULL DEFAULT 'Comunicação interna';
+ALTER TABLE tarefas ADD COLUMN revisor_id uuid REFERENCES usuarios(id) ON DELETE RESTRICT;
+ALTER TABLE tarefas ADD COLUMN prazo_etapa timestamptz;
+ALTER TABLE tarefas ADD COLUMN publicacao_prevista timestamptz;
+ALTER TABLE tarefas ADD COLUMN link_material text NOT NULL DEFAULT '';
+ALTER TABLE tarefas ADD COLUMN link_publicado text NOT NULL DEFAULT '';
+ALTER TABLE tarefas ADD COLUMN aprovador_id uuid REFERENCES usuarios(id) ON DELETE RESTRICT;
+ALTER TABLE tarefas ADD COLUMN aprovado_em timestamptz;
+ALTER TABLE tarefas ADD COLUMN publicado_em timestamptz;
+ALTER TABLE tarefas ADD COLUMN versao integer NOT NULL DEFAULT 1;
+-- Demandas antigas concluídas não são presumidas como publicações editoriais.
+UPDATE tarefas SET etapa=CASE status WHEN 'concluida' THEN 'encerrada' WHEN 'em_andamento' THEN 'producao' ELSE 'pauta' END;
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_tipo_editorial CHECK (tipo_conteudo IN ('video','materia','arte','outro'));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_etapa_editorial CHECK (etapa IN ('pauta','producao','edicao','revisao','aprovacao','pronto_publicacao','publicado','encerrada'));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_canal_editorial CHECK (canal IN ('Portal institucional','Instagram','YouTube','Facebook','Imprensa','Comunicação interna'));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_status_editorial CHECK (status = CASE WHEN etapa='pauta' THEN 'pendente' WHEN etapa IN ('publicado','encerrada') THEN 'concluida' ELSE 'em_andamento' END);
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_aprovacao_editorial CHECK ((etapa IN ('pronto_publicacao','publicado') AND aprovador_id IS NOT NULL AND aprovado_em IS NOT NULL) OR (etapa NOT IN ('pronto_publicacao','publicado') AND aprovador_id IS NULL AND aprovado_em IS NULL));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_publicacao_editorial CHECK ((etapa='publicado') = (publicado_em IS NOT NULL) AND (etapa<>'publicado' OR length(trim(link_publicado))>0));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_prazos_editoriais CHECK ((prazo_etapa IS NULL OR prazo_etapa<=prazo) AND (publicacao_prevista IS NULL OR prazo<=publicacao_prevista));
+ALTER TABLE tarefas ADD CONSTRAINT tarefas_versao_editorial CHECK (versao>0);
+CREATE INDEX idx_tarefas_etapa ON tarefas(etapa);
+CREATE INDEX idx_tarefas_publicacao_prevista ON tarefas(publicacao_prevista) WHERE etapa NOT IN ('publicado','encerrada');
+ALTER TABLE historicos_tarefa ADD COLUMN etapa text;
+ALTER TABLE historicos_tarefa ADD COLUMN prazo_etapa timestamptz;
+ALTER TABLE historicos_tarefa ADD COLUMN responsavel_id uuid REFERENCES usuarios(id) ON DELETE RESTRICT;

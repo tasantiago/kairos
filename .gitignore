@@ -29,3 +29,15 @@ Thumbs.db
 
 # Arquivos de ambiente (não subir nunca)
 **/.env*
+
+# MVP Fluxo / Comunicação Social
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+backend/fluxo
+*.log
+
+# Anexos locais
+backend/uploads/
